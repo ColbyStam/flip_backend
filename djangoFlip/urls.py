@@ -15,8 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
+from flipAPI.views import FlashcardViewSet, home, serve_react
+from django.conf import settings
+
+
+
 
 router = DefaultRouter()
 router.register(r'flashcards', FlashcardViewSet, basename='flashcard')
@@ -24,4 +29,8 @@ router.register(r'flashcards', FlashcardViewSet, basename='flashcard')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    #path('', home, name='home'),
+    # This regex matches any path that does NOT start with /api
+    re_path(r'^(?!api/|admin/).*$', serve_react, {"document_root": settings.REACT_APP_BUILD_PATH}),
 ]
+

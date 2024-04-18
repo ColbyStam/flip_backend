@@ -1,52 +1,34 @@
 from django.db import models
 
-# Create your models here.
-class FlashCard(models.Model):
-    
-    flashcard_id = models.AutoField()
-    set_id = models.AutoField()
-    front_text = models.TextField()
-    back_text = models.TextField()
-    created_at = models.DateTimeField()
-    
-    
-    
+class User(models.Model):
+    username = models.CharField(max_length=100, unique=True)
+    email = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(null=True, blank=True)
+
 class Flashcard_Set(models.Model):
-    
-    set_id = models.AutoField()
-    user_id = models.AutoField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField()
-    created_at = models.DateTimeField()
-    is_public = models.BooleanField()
-    
-    
-    
-class User(models.Model):
-    
-    user_id = models.AutoField()
-    username = models.CharField(max_length=100)
-    email = models.CharField(max_length=100)
-    password = models.CharField(max_length=200)
-    created_at = models.DateTimeField()
-    last_login = models.DateTimeField()
- 
- 
- 
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_public = models.BooleanField(default=False)
+
+class Flashcard(models.Model):
+    set = models.ForeignKey(Flashcard_Set, on_delete=models.CASCADE)
+    front_text = models.TextField()
+    back_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class User_Flashcard_Set(models.Model):
-    
-    user_id = models.ForeignKey(to=User, on_delete=True)
-    set_id = models.ForeignKey(to=Flashcard_Set, on_delete=True)
-    is_favorite = models.BooleanField()
-    last_studied = models.DateTimeField()
-    
-    
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    set = models.ForeignKey(Flashcard_Set, on_delete=models.CASCADE)
+    is_favorite = models.BooleanField(default=False)
+    last_studied = models.DateTimeField(null=True, blank=True)
+
 class Study_Session(models.Model):
-    
-    session_id = models.AutoField()
-    user_id = models.ForeignKey(to=User, on_delete=True)
-    set_id = models.ForeignKey(to=Flashcard_Set, on_delete=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    set = models.ForeignKey(Flashcard_Set, on_delete=models.CASCADE)
     started_at = models.DateTimeField()
     ended_at = models.DateTimeField()
-    score = models.AutoField()
+    score = models.IntegerField() 

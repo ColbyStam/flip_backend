@@ -3,7 +3,8 @@ from django.db import models
 class User(models.Model):
     username = models.CharField(max_length=100, unique=True)
     email = models.CharField(max_length=100, unique=True)
-    password = models.CharField(max_length=200)
+    #password = models.CharField(max_length=200)  # handled by Cognito
+    cognito_user_id = models.CharField(max_length=150, unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(null=True, blank=True)
 
@@ -31,4 +32,4 @@ class Study_Session(models.Model):
     set = models.ForeignKey(Flashcard_Set, on_delete=models.CASCADE)
     started_at = models.DateTimeField()
     ended_at = models.DateTimeField()
-    score = models.IntegerField() 
+    score = models.IntegerField()

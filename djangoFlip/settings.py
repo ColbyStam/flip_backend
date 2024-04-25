@@ -16,18 +16,13 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-12o5l&7uu7#6hi1wpf-+870ei8++4_x68d10-nw_vezh5t&d=l'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -43,8 +38,6 @@ INSTALLED_APPS = [
     'flipAPI',
 ]
 
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -56,15 +49,19 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default Auth Backend
+    'cognito_jwt.auth_backends.CognitoBackend',   # Cognito Auth Backend
+]
+
+# AWS Cognito Settings
+COGNITO_USER_POOL_ID = 'eu-west-1_example'
+COGNITO_APP_ID = 'example123'
+COGNITO_AUDIENCE = 'example123'
+COGNITO_JWT_KEY = 'your_cognito_jwt_key_here'
+COGNITO_KEY_SET = 'cognito_key_set_here'
+
 ROOT_URLCONF = 'djangoFlip.urls'
-
-CORS_ALLOW_ALL_ORIGINS = True
-
-ALLOWED_HOSTS = ['*']
-
-CORS_ALLOW_ALL_ORIGINS = True  # Be careful with this in production
-CSRF_COOKIE_SAMESITE = 'Lax'
-
 
 TEMPLATES = [
     {
@@ -84,10 +81,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangoFlip.wsgi.application'
 
-
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -95,10 +89,7 @@ DATABASES = {
     }
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -114,30 +105,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'flip-react-app/build/static')]
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 REACT_APP_BUILD_PATH = 'flip-react-app/build/'

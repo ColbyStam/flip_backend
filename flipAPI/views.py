@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Flashcard
-from .serializers import FlashcardSerializer
+#NEW
+from .models import Title, Card  # Updated to import Title and Card
+from .serializers import TitleSerializer, CardSerializer
+#from .models import Flashcard
+#from .serializers import FlashcardSerializer
 import os
 from django.http import Http404, HttpResponseServerError, HttpResponse
 from django.utils._os import safe_join
@@ -17,11 +20,16 @@ class CognitoAuthentication(BaseAuthentication):
     def authenticate(self, request):
         authorization_header = request.headers.get('Authorization')
 
-        if not authorization_header:
-            return None
+        try:
+            token_prefix, token = authorization_header.split()
+            if token_prefix.lower() != 'bearer':
+                raise AuthenticationFailed('Invalid token prefix.')
+        except ValueError:
+            raise AuthenticationFailed('Authorization header must be Bearer token.')
+        
         try:
             # Assuming the token prefix is 'Bearer' followed by a space
-            token = authorization_header.split(' ')[1]
+            token = authorization_header.split(' ')[1].strip()
             # Decode the JWT from the token
             decoded_token = jwt.decode(
                 token, 
@@ -46,10 +54,20 @@ class CognitoAuthentication(BaseAuthentication):
     def authenticate_header(self, request):
         return 'Bearer'
 
-class FlashcardViewSet(viewsets.ModelViewSet):
-    authentication_classes = [CognitoAuthentication]  # Apply CognitoAuthentication
-    queryset = Flashcard.objects.all()
-    serializer_class = FlashcardSerializer
+
+## NEW VIEWSET
+class TitleViewSet(viewsets.ModelViewSet):
+    authentication_classes = [CognitoAuthentication]  # Uncomment to apply CognitoAuthentication
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+
+
+
+# OLD VIEWSET
+# class FlashcardViewSet(viewsets.ModelViewSet):
+#     # authentication_classes = [CognitoAuthentication]  # Apply CognitoAuthentication
+#     queryset = Flashcard.objects.all()
+#     serializer_class = FlashcardSerializer
     
 def home(request):
     return HttpResponse("Welcome to the home page!")

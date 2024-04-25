@@ -114,6 +114,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'flip-react-app/build/static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'flip-project/build/static')]
 
-REACT_APP_BUILD_PATH = 'flip-react-app/build/'
+REACT_APP_BUILD_PATH = 'flip-project/build/'
